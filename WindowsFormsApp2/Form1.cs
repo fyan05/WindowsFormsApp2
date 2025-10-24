@@ -13,6 +13,7 @@ namespace WindowsFormsApp2
 {
     public partial class Form1 : Form
     {
+        Connection connection = new Connection(); 
         public Form1()
         {
             InitializeComponent();
@@ -39,11 +40,11 @@ namespace WindowsFormsApp2
                 return;
             }
 
-            using (SqlConnection con = new SqlConnection(
-                "Data Source = FYAN\\SQLEXPRESS; Initial Catalog=DB_LoginApp;Integrated Security =True;TrustServerCertificate=true"))
+            using (SqlConnection con = connection.GetConnection())
             {
                 con.Open();
                 string query = "SELECT * FROM users WHERE nama = @nama AND Password = @password";
+
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@nama", username);
@@ -52,7 +53,7 @@ namespace WindowsFormsApp2
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
-                        String nama = reader["nama"].ToString();
+                        string nama = reader["nama"].ToString();
                         Form2 f2 = new Form2(nama);
                         f2.Show();
                         this.Hide();
@@ -66,6 +67,7 @@ namespace WindowsFormsApp2
                 }
             }
         }
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
